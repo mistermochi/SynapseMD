@@ -1,34 +1,26 @@
 import { ClinicalCitation } from '../types/clinical';
 
+function getCitationDisplayTitle(cit: ClinicalCitation): string {
+  const parentheticalMatch = cit.title.match(/\(([^)]+)\)$/);
+  if (parentheticalMatch?.[1]) {
+    return parentheticalMatch[1];
+  }
+
+  if (!cit.publisher && !cit.year) {
+    return cit.title;
+  }
+
+  return cit.title;
+}
+
 export function formatCitationToMarkdown(cit: ClinicalCitation, index?: number): string {
   const numStr = index !== undefined ? `${index}. ` : '- ';
-  let text = `${numStr}**${cit.title}**`;
-  if (cit.authors) {
-    text += ` — *${cit.authors}*`;
-  }
-  if (cit.publisher) {
-    text += ` (${cit.publisher}, ${cit.year})`;
-  }
-  const badges: string[] = [];
-  if (cit.sourceType) {
-    badges.push(`[${cit.sourceType.toUpperCase().replace('_', ' ')}]`);
-  }
-  if (cit.pmid) {
-    badges.push(`[PMID: ${cit.pmid}]`);
-  }
-  if (cit.doi) {
-    badges.push(`[DOI: ${cit.doi}]`);
-  }
-  if (badges.length > 0) {
-    text += `\n   ${badges.join(' ')}`;
-  }
-  if (cit.url) {
-    text += `\n   Link: ${cit.url}`;
-  }
-  if (cit.relevanceStatement) {
-    text += `\n   > Clinical note: ${cit.relevanceStatement}`;
-  }
-  return text;
+  const isVerified = cit.verificationStatus === 'user-verified';
+  const name = getCitationDisplayTitle(cit);
+  const citationText = [name, cit.publisher, cit.year].filter(Boolean).join('. ');
+  const titleMarkup = cit.url && isVerified ? `[${citationText}](${cit.url})` : `**${citationText}**`;
+
+  return `${numStr}${titleMarkup}`;
 }
 
 export function generateVancouverCitation(cit: ClinicalCitation, index: number): string {

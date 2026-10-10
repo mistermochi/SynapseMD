@@ -418,38 +418,50 @@ export function generateMockPubMedArticles(term: string) {
 
 export function generateMockFdaLabel(drug: string) {
   const clean = drug.toLowerCase();
+  const manufacturer = 'SynapseMD Clinical Reference';
+  const packageInsertUrl = `https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&query=${encodeURIComponent(drug)}`;
+
   if (clean.includes('dapa') || clean.includes('farxiga')) {
     return {
       found: true,
       genericName: 'Dapagliflozin',
       brandName: 'FARXIGA',
+      manufacturer,
       boxedWarning: undefined,
-      indications: 'FARXIGA is indicated as an adjunct to diet and exercise to improve glycemic control in adults with type 2 diabetes mellitus; to reduce the risk of hospitalization for heart failure in adults with type 2 diabetes and cardiovascular disease; to reduce the risk of cardiovascular death and hospitalization for heart failure in adults with heart failure (NYHA class II-IV); and to reduce the risk of sustained eGFR decline, end-stage kidney disease, cardiovascular death, and hospitalization for heart failure in adults with chronic kidney disease.',
+      indicationsAndUsage: 'FARXIGA is indicated as an adjunct to diet and exercise to improve glycemic control in adults with type 2 diabetes mellitus; to reduce the risk of hospitalization for heart failure in adults with type 2 diabetes and cardiovascular disease; to reduce the risk of cardiovascular death and hospitalization for heart failure in adults with heart failure (NYHA class II-IV); and to reduce the risk of sustained eGFR decline, end-stage kidney disease, cardiovascular death, and hospitalization for heart failure in adults with chronic kidney disease.',
       dosageAndAdministration: 'Heart Failure & CKD: The recommended dose is 10 mg orally once daily. May be initiated down to eGFR >= 20 mL/min/1.73m2. No dosage titration required.',
       contraindications: 'Prior serious hypersensitivity reaction to dapagliflozin. Patients on dialysis.',
       warningsAndPrecautions: 'Ketoacidosis: Assess patients presenting with signs of ketoacidosis regardless of blood glucose. Hold for at least 3 days prior to surgery. Volume Depletion: Assess volume status and correct before initiation. Necrotizing Fasciitis of the Perineum (Fournier\'s Gangrene). Genital Mycotic Infections.',
+      drugInteractions: 'Use with insulin or sulfonylurea can increase hypoglycemia risk; co-administered diuretics may potentiate volume depletion.',
+      packageInsertUrl,
     };
   } else if (clean.includes('empa') || clean.includes('jardiance')) {
     return {
       found: true,
       genericName: 'Empagliflozin',
       brandName: 'JARDIANCE',
+      manufacturer,
       boxedWarning: undefined,
-      indications: 'JARDIANCE is indicated to reduce the risk of cardiovascular death and hospitalization for heart failure in adults with heart failure; to reduce the risk of sustained decline in eGFR, end-stage kidney disease, and cardiovascular death in adults with chronic kidney disease; and to improve glycemic control in type 2 diabetes.',
+      indicationsAndUsage: 'JARDIANCE is indicated to reduce the risk of cardiovascular death and hospitalization for heart failure in adults with heart failure; to reduce the risk of sustained decline in eGFR, end-stage kidney disease, and cardiovascular death in adults with chronic kidney disease; and to improve glycemic control in type 2 diabetes.',
       dosageAndAdministration: 'The recommended dose of JARDIANCE is 10 mg once daily in the morning, taken with or without food. Can be initiated in patients with eGFR >= 20 mL/min/1.73m2.',
       contraindications: 'Severe hypersensitivity reaction to empagliflozin; maintenance dialysis.',
       warningsAndPrecautions: 'Ketoacidosis (euglycemic DKA): Withhold 3-4 days before scheduled surgery. Volume depletion: Symptomatic hypotension may occur. Hypoglycemia when combined with insulin secretagogues.',
+      drugInteractions: 'May potentiate hypoglycemia when used with insulin or sulfonylureas; monitor diuretic and antihypertensive effects.',
+      packageInsertUrl,
     };
   } else if (clean.includes('apixaban') || clean.includes('eliquis')) {
     return {
       found: true,
       genericName: 'Apixaban',
       brandName: 'ELIQUIS',
+      manufacturer,
       boxedWarning: 'PREMATURE DISCONTINUATION INCREASES RISK OF THROMBOTIC EVENTS; SPINAL/EPIDURAL HEMATOMA RISK.',
-      indications: 'ELIQUIS is indicated to reduce the risk of stroke and systemic embolism in patients with nonvalvular atrial fibrillation; for prophylaxis of deep vein thrombosis (DVT) following hip/knee replacement; and for treatment of DVT and pulmonary embolism.',
+      indicationsAndUsage: 'ELIQUIS is indicated to reduce the risk of stroke and systemic embolism in patients with nonvalvular atrial fibrillation; for prophylaxis of deep vein thrombosis (DVT) following hip/knee replacement; and for treatment of DVT and pulmonary embolism.',
       dosageAndAdministration: 'Nonvalvular AF: 5 mg orally twice daily. Dose reduction to 2.5 mg twice daily is recommended for patients with at least 2 of the following: age >= 80 years, body weight <= 60 kg, or serum creatinine >= 1.5 mg/dL. Calculate Cockcroft-Gault CrCl using actual body weight.',
       contraindications: 'Active pathological bleeding; severe hypersensitivity to apixaban.',
       warningsAndPrecautions: 'Bleeding risk: Concomitant use of drugs affecting hemostasis increases bleeding risk. Reversal agent: Andexanet alfa is approved for life-threatening bleeding.',
+      drugInteractions: 'Concomitant antiplatelet therapy, NSAIDs, and some CYP3A4/P-gp inhibitors can increase bleeding risk.',
+      packageInsertUrl,
     };
   }
 
@@ -457,10 +469,13 @@ export function generateMockFdaLabel(drug: string) {
     found: true,
     genericName: drug.toUpperCase(),
     brandName: `${drug.toUpperCase()} CLINICAL FORMULATION`,
+    manufacturer,
     boxedWarning: undefined,
-    indications: `Prescribed for evidence-based clinical indications associated with ${drug}. Consult clinical guidelines for full pharmacotherapeutic profile.`,
+    indicationsAndUsage: `Prescribed for evidence-based clinical indications associated with ${drug}. Consult clinical guidelines for full pharmacotherapeutic profile.`,
     dosageAndAdministration: 'Follow standard adult titration protocols based on organ function and body surface area.',
     contraindications: 'Severe hypersensitivity to active substance or excipients.',
     warningsAndPrecautions: 'Monitor routine renal and hepatic markers during therapy initiation and dose modification.',
+    drugInteractions: 'Clinical review of CYP interactions and organ function is required before initiation.',
+    packageInsertUrl,
   };
 }

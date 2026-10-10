@@ -8,7 +8,7 @@ import { ClinicalCopilotPane } from './components/ClinicalCopilotPane';
 import { ObsidianSyncModal } from './components/ObsidianSyncModal';
 import { VersionHistoryModal } from './components/VersionHistoryModal';
 import { Sheet } from './components/ui/sheet';
-import { replaceBlockInMarkdown, appendReferenceToMarkdown } from './utils/markdownUtils';
+import { replaceBlockInMarkdown } from './utils/markdownUtils';
 import { formatCitationToMarkdown } from './utils/citationFormatter';
 import { getMockOfflineStatus, toggleMockOfflineMode } from './services/api';
 import {
@@ -21,17 +21,67 @@ import {
   Moon,
 } from 'lucide-react';
 
+const stripReferenceSections = (noteContent: string): string => {
+  const lines = noteContent.split(/\r?\n/);
+  const result: string[] = [];
+  let insideReferences = false;
+  let referencesLevel = 0;
+
+  for (const line of lines) {
+    const headingMatch = line.match(/^(#{1,6})\s+/);
+    if (line.match(/^#{1,6}\s+References\s*$/i)) {
+      insideReferences = true;
+      referencesLevel = headingMatch ? headingMatch[1].length : 0;
+      continue;
+    }
+
+    if (insideReferences) {
+      if (headingMatch && headingMatch[1].length <= referencesLevel) {
+        insideReferences = false;
+        result.push(line);
+      }
+      continue;
+    }
+
+    result.push(line);
+  }
+
+  return result.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+};
+
+const rebuildReferencesSection = (noteContent: string, citations: ClinicalCitation[]) => {
+  const cleanedContent = stripReferenceSections(noteContent);
+  const baseContent = cleanedContent.length ? cleanedContent : noteContent.trim();
+
+  if (!citations.length) {
+    return baseContent;
+  }
+
+  const renderedRefs = citations
+    .map((cit, index) => formatCitationToMarkdown(cit, index + 1))
+    .join('\n');
+
+  return `${baseContent}\n\n## References\n${renderedRefs}\n`;
+};
+
+const normalizeNoteReferenceLinks = (note: ClinicalNote): ClinicalNote => {
+  return { ...note, content: rebuildReferencesSection(note.content, note.citations || []) };
+};
+
 export default function App() {
   const [notes, setNotes] = useState<ClinicalNote[]>(() => {
     const saved = localStorage.getItem('synapse_md_vault');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return INITIAL_VAULT_NOTES;
-      }
-    }
-    return INITIAL_VAULT_NOTES;
+    const baseNotes = saved
+      ? (() => {
+          try {
+            return JSON.parse(saved);
+          } catch {
+            return INITIAL_VAULT_NOTES;
+          }
+        })()
+      : INITIAL_VAULT_NOTES;
+
+    return Array.isArray(baseNotes) ? baseNotes.map(normalizeNoteReferenceLinks) : INITIAL_VAULT_NOTES.map(normalizeNoteReferenceLinks);
   });
 
   const [activeNoteId, setActiveNoteId] = useState<string>(notes[0]?.id || 'note-sglt2i-hf');
@@ -219,7 +269,9 @@ Enter synthesized evidence for ${title}.
       setCopilotTab('evidence');
     }
     setPendingActionTrigger({ action, text, timestamp: Date.now() });
-    setIsMobileCopilotOpen(true);
+    if (window.innerWidth < 1024) {
+      setIsMobileCopilotOpen(true);
+    }
   };
 
   const handleProposePatch = (patch: {
@@ -274,10 +326,13 @@ Enter synthesized evidence for ${title}.
     setProposedPatch(null);
   };
 
+  const syncReferencesSection = (noteContent: string, citations: ClinicalCitation[]) => {
+    return rebuildReferencesSection(noteContent, citations);
+  };
+
   const handleAddCitationToNote = (cit: ClinicalCitation) => {
     const updatedCitations = [cit, ...activeNote.citations];
-    const citMarkdown = formatCitationToMarkdown(cit, updatedCitations.length);
-    const updatedContent = appendReferenceToMarkdown(activeNote.content, citMarkdown);
+    const updatedContent = syncReferencesSection(activeNote.content, updatedCitations);
 
     setNotes((prev) =>
       prev.map((n) =>
@@ -310,7 +365,8 @@ Enter synthesized evidence for ${title}.
             }
             return c;
           });
-          return { ...n, citations: updated };
+          const updatedContent = syncReferencesSection(n.content, updated);
+          return { ...n, citations: updated, content: updatedContent };
         }
         return n;
       })
@@ -375,7 +431,9 @@ Enter synthesized evidence for ${title}.
           onTriggerClinicalAction={handleTriggerClinicalAction}
           onOpenCitationTab={() => {
             setCopilotTab('citations');
-            setIsMobileCopilotOpen(true);
+            if (window.innerWidth < 1024) {
+              setIsMobileCopilotOpen(true);
+            }
           }}
           proposedPatch={proposedPatch}
           onApplyPatch={handleApplyPatch}
