@@ -1,0 +1,6 @@
+{
+  "name": "SynapseMD - Clinical Knowledge IDE",
+  "description": "A local-first clinical knowledge IDE for doctors to co-author medical notes, synthesize real-time trial evidence, cross-reference drug databases, track citations, and transform practice questions into knowledge updates.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SynapseMD - Clinical Knowledge IDE</title>
+    <meta name="description" content="A local-first clinical knowledge IDE for doctors to co-author medical notes, synthesize real-time trial evidence, cross-reference drug databases, track citations, and transform practice questions into knowledge updates." />
+    <meta property="og:title" content="SynapseMD - Clinical Knowledge IDE" />
+    <meta property="og:description" content="A local-first clinical knowledge IDE for doctors to co-author medical notes, synthesize real-time trial evidence, cross-reference drug databases, track citations, and transform practice questions into knowledge updates." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      // Suppress Vite client HMR WebSocket connection errors in preview iframe
+      window.addEventListener('error', function(event) {
+        var msg = (event && event.message) ? String(event.message) : '';
+        var filename = (event && event.filename) ? String(event.filename) : '';
+        if (msg.includes('WebSocket') || msg.includes('@vite/client') || filename.includes('@vite/client')) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return true;
+        }
+      }, true);
+      window.addEventListener('unhandledrejection', function(event) {
+        var reason = (event && event.reason) ? String(event.reason) : '';
+        if (reason.includes('WebSocket') || reason.includes('@vite/client')) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      }, true);
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  </head>
+  <body class="h-full overflow-hidden antialiased bg-background text-foreground font-sans">
+    <div id="root" class="h-full"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
