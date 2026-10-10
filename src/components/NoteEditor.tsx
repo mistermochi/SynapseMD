@@ -191,7 +191,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     if (!floatingToolbar) return;
     const selectedText = floatingToolbar.text;
     onTriggerClinicalAction(action, selectedText);
-    if (onOpenMobileCopilot) onOpenMobileCopilot();
+    if (window.innerWidth < 1024 && onOpenMobileCopilot) onOpenMobileCopilot();
     setFloatingToolbar(null);
     setShowCustomAsk(false);
   };
@@ -200,7 +200,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     e.preventDefault();
     if (!floatingToolbar || !customQuestionInput.trim()) return;
     onTriggerClinicalAction('critique', `${floatingToolbar.text}\n\nClinical Question: ${customQuestionInput.trim()}`);
-    if (onOpenMobileCopilot) onOpenMobileCopilot();
+    if (window.innerWidth < 1024 && onOpenMobileCopilot) onOpenMobileCopilot();
     setFloatingToolbar(null);
     setShowCustomAsk(false);
     setCustomQuestionInput('');
@@ -512,7 +512,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
             size="sm"
             onClick={() => {
               onTriggerClinicalAction('critique', note.content);
-              if (onOpenMobileCopilot) onOpenMobileCopilot();
+              if (window.innerWidth < 1024 && onOpenMobileCopilot) onOpenMobileCopilot();
             }}
             className="text-[10.5px] h-6 px-2"
           >

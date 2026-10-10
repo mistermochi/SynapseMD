@@ -109,9 +109,9 @@ SGLT2 inhibitors reduce cardiovascular events in T2DM. Initiation traditionally 
 - Acute kidney injury (AKI) transient dip: Initial serum creatinine rise of up to 30% is expected due to restoration of tubuloglomerular feedback and does not indicate parenchymal injury.
 
 ## References
-1. McMurray JJV, et al. *DAPA-HF*. N Engl J Med 2019;381:1995-2008. [PMID: 31535829]
-2. Packer M, et al. *EMPEROR-Reduced*. N Engl J Med 2020;383:1413-1424. [PMID: 32865377]
-3. Heidenreich PA, et al. *2022 AHA/ACC/HFSA HF Guideline*. Circulation 2022;145:e895-e1032.
+1. [DAPA-HF. N Engl J Med. 2019](https://pubmed.ncbi.nlm.nih.gov/31535829/)
+2. [EMPEROR-Reduced. N Engl J Med. 2020](https://pubmed.ncbi.nlm.nih.gov/32865377/)
+3. [2022 AHA/ACC/HFSA HF Guideline. Circulation. 2022](https://www.ahajournals.org/doi/10.1161/CIR.0000000000001063)
 `,
   },
   {
